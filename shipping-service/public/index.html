@@ -1,0 +1,84 @@
+<!doctype html>
+<html lang="fr">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>MSOA — Shipping Console</title>
+  <link rel="stylesheet" href="console.css">
+</head>
+<body>
+  <header class="topbar">
+    <div class="brand">
+      <span class="logo" aria-hidden="true">▣</span>
+      <div>
+        <h1>Shipping Console</h1>
+        <p>Microservice Shipping · port <span id="port"></span></p>
+      </div>
+    </div>
+    <div class="health" id="health" role="status" aria-live="polite">
+      <span class="dot"></span><span id="health-text">Vérification…</span>
+    </div>
+  </header>
+
+  <main>
+    <section class="card" aria-labelledby="create-title">
+      <h2 id="create-title">Nouvelle expédition</h2>
+      <form id="create-form" novalidate>
+        <label>Order ID
+          <input name="orderId" required maxlength="100" placeholder="order-123" autocomplete="off">
+        </label>
+        <label>Destinataire
+          <input name="name" maxlength="100" placeholder="Demo Customer" autocomplete="off">
+        </label>
+        <label>Adresse
+          <input name="address" maxlength="200" placeholder="123 Main Street" autocomplete="off">
+        </label>
+        <label>Ville
+          <input name="city" maxlength="100" placeholder="Casablanca" autocomplete="off">
+        </label>
+        <button type="submit" class="primary">Créer l'expédition</button>
+      </form>
+      <p class="hint">L'adresse peut être omise : elle est alors reprise de la commande (si l'intégration Orders est active).</p>
+
+      <details class="token">
+        <summary>Jeton d'authentification (optionnel)</summary>
+        <input id="token" type="password" placeholder="Bearer token (AUTH_MODE=jwt / remote)" autocomplete="off">
+      </details>
+    </section>
+
+    <section class="card" aria-labelledby="list-title">
+      <div class="list-head">
+        <h2 id="list-title">Expéditions <span class="count" id="count">0</span></h2>
+        <div class="filters">
+          <input id="search" type="search" placeholder="Rechercher (commande, suivi, ville…)" aria-label="Rechercher">
+          <select id="status-filter" aria-label="Filtrer par statut">
+            <option value="">Tous les statuts</option>
+            <option>PREPARING</option>
+            <option>SHIPPED</option>
+            <option>IN_TRANSIT</option>
+            <option>DELIVERED</option>
+            <option>CANCELLED</option>
+          </select>
+          <button id="refresh" type="button">Actualiser</button>
+        </div>
+      </div>
+
+      <div id="toast" class="toast" role="alert" hidden></div>
+
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr>
+              <th>Suivi</th><th>Commande</th><th>Destinataire</th><th>Statut</th><th>Mise à jour</th><th class="actions-col">Actions</th>
+            </tr>
+          </thead>
+          <tbody id="rows"></tbody>
+        </table>
+        <p id="empty" class="empty" hidden>Aucune expédition.</p>
+      </div>
+    </section>
+  </main>
+
+  <script src="console.js" defer></script>
+</body>
+</html>

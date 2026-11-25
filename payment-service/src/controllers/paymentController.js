@@ -24,26 +24,31 @@ function getPaymentByOrderId(req, res) {
 }
 
 // POST: créer un paiement
-function createPayment(req, res) {
+
+async function createPayment(req, res) {
     try {
         const { orderId, method } = req.body;
 
-        const payment = paymentService.processPayment(
+        const payment = await paymentService.processPayment(
             orderId,
             method
         );
 
         res.status(201).json({
             message: "Payment processed successfully",
-            payment: payment
+            payment: payment,
+            shipmentEvent: "PUBLISHED"
         });
 
     } catch (error) {
-        res.status(400).json({
+        console.error("Payment error:", error.message);
+
+        res.status(500).json({
             message: error.message
         });
     }
 }
+
 
 module.exports = {
     getAllPayments,

@@ -5,8 +5,9 @@ const {
 } = require("../models/paymentModel");
 
 const { randomUUID } = require("crypto");
+const { publishPaymentSuccess } = require("./rabbitmqService");
 
-function processPayment(orderId, method) {
+async function processPayment(orderId, method) {
 
     // Vérifier les informations
     if (!orderId || !method) {
@@ -29,8 +30,13 @@ function processPayment(orderId, method) {
         createdAt: new Date().toISOString()
     };
 
-    // Enregistrer le paiement dans le tableau
-    return createPayment(payment);
+    // Enregistrer le paiement
+    createPayment(payment);
+
+    // Envoyer l'événement à RabbitMQ
+    await publishPaymentSuccess(payment);
+
+    return payment;
 }
 
 module.exports = {
